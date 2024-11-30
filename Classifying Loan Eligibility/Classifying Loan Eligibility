@@ -1,0 +1,41 @@
+# Import Necessary Libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Load the Data
+data = pd.read_csv('loan_data.csv')
+
+# Feature Engineering
+# Select relevant features (e.g., income, credit score, employment status).
+# Handle missing values and outliers if necessary.
+
+# For this example, let's assume 'income', 'credit_score', and 'employment_status' are selected
+# Replace 'NaN' with the mean of the column or use other imputation techniques
+data.fillna(data.mean(), inplace=True)
+
+# Optionally, convert categorical variables to numeric (if necessary)
+# Example: One-hot encoding for 'employment_status'
+data = pd.get_dummies(data, columns=['employment_status'], drop_first=True)
+
+# Split the Data
+X = data.drop('loan_status', axis=1)
+y = data['loan_status']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and Train the Random Forest Model
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Make Predictions
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+confusion_mat = confusion_matrix(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Classification Report:\n", report)
+print("Confusion Matrix:\n", confusion_mat)

@@ -1,0 +1,39 @@
+import pandas as pd 
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+# Load the data (replace 'waste_generation.csv' with your actual file path)
+data = pd.read_csv('waste_generation.csv')
+
+# Feature engineering (adjust based on your specific data)
+data['average_growth_rate'] = (data['waste_generation_2024'] - data['waste_generation_2014']) / 10
+data['recycling_rate'] = data['recycled_waste'] / data['waste_generation_2024']
+
+# Select relevant features
+features = ['average_growth_rate', 'recycling_rate', 'gdp_per_capita', 'population_growth']
+X = data[features]
+y = data['waste_generation_trend']  # Assuming 'waste_generation_trend' is the target variable
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+confusion_mat = confusion_matrix(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1-score:", f1)
+print("Confusion Matrix:\n", confusion_mat)

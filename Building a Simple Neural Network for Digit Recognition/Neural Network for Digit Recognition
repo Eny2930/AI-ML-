@@ -1,0 +1,35 @@
+# Project: Building a Simple Neural Network for Digit Recognition
+
+# Step 1: Import Necessary Libraries
+import tensorflow as tf # type: ignore
+from tensorflow.keras.models import Sequential # type: ignore
+from tensorflow.keras.layers import Dense, Flatten # type: ignore
+
+# Step 2: Load the MNIST Dataset
+(X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+# Step 3: Preprocess the Data
+# Normalize the pixel values to the range [0, 1]
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+
+# Step 4: Build the Model
+model = Sequential([
+    Flatten(input_shape=(28, 28)),
+    Dense(128, activation='relu'),
+    Dense(10, activation='softmax')
+])
+
+# Step 5: Compile the Model
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Step 6: Train the Model
+model.fit(X_train, y_train, epochs=10)
+
+# Step 7: Evaluate the Model
+test_loss, test_acc = model.evaluate(X_test, y_test)
+print('Test accuracy:', test_acc)
